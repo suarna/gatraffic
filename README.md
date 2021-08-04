@@ -133,7 +133,7 @@ SINGLE = False
 SEL_AL1 = False  
 SEL_AL2 = False  
 ADAPT = False  
-INTERSECTION_ID = '101' 
+INTERSECTION_ID = '101'   
 NORM = 200  
 
 -The parameters SINGLE, AL_1 and AL_2 when set to True are used to compute with other selection algorithms, SPEA2 and 
