@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on lun 29 mar 2021 21:09:47 by Eclipse SUMO netedit Version 1.4.0
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
+
+    <input>
+        <sumo-net-file value="/home/miguel/PycharmProjects/DRL_Traffic/Nets/SimpleNet/net.net.xml"/>
+    </input>
+
+    <output>
+        <output-file value="/home/miguel/PycharmProjects/DRL_Traffic/Nets/SimpleNet/net.net.xml"/>
+    </output>
+
+    <processing>
+        <geometry.min-radius.fix.railways value="false"/>
+        <geometry.max-grade.fix value="false"/>
+        <offset.disable-normalization value="true"/>
+        <lefthand value="false"/>
+    </processing>
+
+    <junctions>
+        <no-internal-links value="false"/>
+        <no-turnarounds value="true"/>
+        <junctions.corner-detail value="5"/>
+        <junctions.limit-turn-speed value="5.5"/>
+        <rectangular-lane-cut value="false"/>
+    </junctions>
+
+    <pedestrian>
+        <walkingareas value="false"/>
+    </pedestrian>
+
+    <netedit>
+        <route-files value="/home/miguel/PycharmProjects/DRL_Traffic/Nets/SimpleNet/demandpedestrian.rou.xml"/>
+    </netedit>
+
+    <report>
+        <aggregate-warnings value="5"/>
+    </report>
+
+</configuration>
+-->
+
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+    <route edges="EI IN" color="green" id="route_EN"/>
+    <route edges="EI IS" color="green" id="route_ES"/>
+    <route edges="EI IW" color="green" id="route_EW"/>
+    <route edges="NI IE" color="red" id="route_NE"/>
+    <route edges="NI IS" color="red" id="route_NS"/>
+    <route edges="NI IW" color="red" id="route_NW"/>
+    <route edges="SI IE" color="blue" id="route_SE"/>
+    <route edges="SI IN" color="blue" id="route_SN"/>
+    <route edges="SI IW" color="blue" id="route_SW"/>
+    <route edges="WI IE" color="yellow" id="route_WE"/>
+    <route edges="WI IN" color="yellow" id="route_WN"/>
+    <route edges="WI IS" color="yellow" id="route_WS"/>
+    <flow id="flow_NE" begin="0.00" color="red" from="NI" to="IE" end="450.00" probability="0.01"/>
+    <flow id="flow_NS" begin="0.00" color="red" from="NI" to="IS" end="450.00" probability="0.01"/>
+    <flow id="flow_NW" begin="0.00" color="red" from="NI" to="IW" end="450.00" probability="0.01"/>
+    <flow id="flow_WE" begin="0.00" color="yellow" from="WI" to="IE" end="450.00" probability="0.06"/>
+    <flow id="flow_WN" begin="0.00" color="yellow" from="WI" to="IN" end="450.00" probability="0.06"/>
+    <flow id="flow_WS" begin="0.00" color="yellow" from="WI" to="IS" end="450.00" probability="0.06"/>
+    <flow id="flow_EN" begin="0.00" color="green" from="EI" to="IN" end="450.00" probability="0.005"/>
+    <flow id="flow_ES" begin="0.00" color="green" from="EI" to="IS" end="450.00" probability="0.025"/>
+    <flow id="flow_EW" begin="0.00" color="green" from="EI" to="IW" end="450.00" probability="0.005"/>
+    <flow id="flow_SE" begin="0.00" color="blue" from="SI" to="IE" end="450.00" probability="0.01"/>
+    <flow id="flow_SN" begin="0.00" color="blue" from="SI" to="IN" end="450.00" probability="0.01"/>
+    <flow id="flow_SW" begin="0.00" color="blue" from="SI" to="IW" end="450.00" probability="0.01"/>
+    <personFlow id="personFlow_E" begin="0.00" end="450.00" probability="0.010">
+        <personTrip from="EI" to="IW"/>
+    </personFlow>
+    <personFlow id="personFlow_N" begin="0.00" end="450.00" probability="0.010">
+        <personTrip from="NI" to="IS"/>
+    </personFlow>
+    <personFlow id="personFlow_S" begin="0.00" end="450.00" probability="0.010">
+        <personTrip from="SI" to="IN"/>
+    </personFlow>
+    <personFlow id="personFlow_W" begin="0.00" end="450.00" probability="0.010">
+        <personTrip from="WI" to="IE"/>
+    </personFlow>
+</routes>

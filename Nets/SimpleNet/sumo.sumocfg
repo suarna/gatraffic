@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on sáb 27 feb 2021 22:17:59 by Eclipse SUMO GUI Version 1.4.0
+-->
+
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
+
+    <input>
+        <net-file value="/home/miguel/PycharmProjects/gatraffic/Nets/SimpleNet/net.net.xml"/>
+        <route-files value="/home/miguel/PycharmProjects/gatraffic/Nets/SimpleNet/demandpedestrian.rou.xml"/>
+        <additional-files value="/home/miguel/PycharmProjects/gatraffic/Nets/SimpleNet/additional.add.xml"/>
+    </input>
+
+    <gui_only>
+        <registry-viewport value="true"/>
+        <start value="true"/>
+    </gui_only>
+
+</configuration>

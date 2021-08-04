@@ -1,0 +1,17 @@
+<additionals>
+    <tlLogic id="intersection" type="static" programID="0" offset="[32, 17, 28, 32, 21]">
+        <phase duration="30" state="gGgrrrrrrrrrrGrG" />
+        <phase duration="3" state="yyyrrrrrrrrrrgrg" />
+        <phase duration="3" state="rrrrrrrrrrrrrrrr" />
+        <phase duration="30" state="rrrrrrrrrgGgGrGr" />
+        <phase duration="3" state="rrrrrrrrryyyGrGr" />
+        <phase duration="3" state="rrrrrrrrrrrrGrGr" />
+        <phase duration="30" state="rrrgGgrrrrrrGrGr" />
+        <phase duration="3" state="rrryyyrrrrrrgrgr" />
+        <phase duration="3" state="rrrrrrrrrrrrrrrr" />
+        <phase duration="30" state="rrrrrrgGgrrrrGrG" />
+        <phase duration="3" state="rrrrrryyyrrrrGrG" />
+        <phase duration="3" state="rrrrrrrrrrrrrGrG" />
+    </tlLogic>
+
+</additionals>
