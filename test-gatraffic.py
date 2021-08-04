@@ -1,6 +1,7 @@
 import random as rd
 from datetime import datetime
 import matplotlib.pyplot as plot
+import copy
 
 import numpy as np
 import traci
@@ -40,7 +41,6 @@ MIN_PH_TIME = 15
 MAX_PH_TIME = CYCLE - (MIN_PH_TIME * np_phases)
 MIN_OFFS_TIME = 0
 MAX_OFFS_TIME = 100
-# SEL_AL = True  SPEA2 / False NSGA2
 SINGLE = False
 SEL_AL1 = False
 SEL_AL2 = False
@@ -144,7 +144,7 @@ v2c_list = []
 lb_list = []
 best_list = []
 best_test_list = []
-intensity_list = []
+intensity_list = [intensity]
 
 
 def main():
@@ -172,7 +172,8 @@ def main():
                                                 True)
 
             lb_list.append(lb)
-            best = hof.items[0]
+            # Get a copy of the best hof item
+            best = copy.deepcopy(hof.items[0])
             best_list.append(best)
             print("\n\033[0;31;40mHOF content is: ", hof)
             print("Best Plan = {}\033[0m".format(best))
@@ -184,10 +185,14 @@ def main():
                     # Adapt to cycle
                     plan = gatraffictoolbox.adapt(hof.items[_], CYCLE, MIN_PH_TIME, MAX_PH_TIME)
                     result = sim.get_score(plan, test_env)
+                    # Update fitness value of hof item
+                    hof.items[_].fitness.values = result
+                    test_result.append(hof.items[_])
                     print("The test score for individual {} adapted from {} is : {}".format(plan, hof.items[_], result))
 
                 else:
                     result = sim.get_score(hof.items[_], test_env)
+                    # Update fitness value of hof item
                     hof.items[_].fitness.values = result
                     test_result.append(hof.items[_])
                     print("The test fitness score for individual {} is : {}".format(hof.items[_], result))
@@ -196,7 +201,10 @@ def main():
             v2c = []
             new_intensity = paramstorage.get_flow("Nets/SimpleNet/testdemandpedestrian.rou.xml")
             for _ in range(len(hof)):
-                v2c.append(np.mean(sim.v2c(hof.items[_], new_intensity)))
+                if i == 0:
+                    v2c.append(np.mean(sim.v2c(hof.items[_], intensity)))
+                else:
+                    v2c.append(np.mean(sim.v2c(hof.items[_], new_intensity)))
             min_idx = np.argmin(v2c)
             v2c_list.append([hof.items[min_idx], v2c[min_idx]])
 
@@ -209,7 +217,8 @@ def main():
 
             # Tuning prob flow adding or subtracting a (random(-1,1))/NORM value
             paramstorage.set_flow("Nets/SimpleNet/testdemandpedestrian.rou.xml", NORM)
-            intensity_list.append(paramstorage.get_flow("Nets/SimpleNet/testdemandpedestrian.rou.xml"))
+            if i != 0:
+                intensity_list.append(paramstorage.get_flow("Nets/SimpleNet/testdemandpedestrian.rou.xml"))
             print("\033[93mThe new flow is: {}\033[0m".format(paramstorage.get_flow(
                 "Nets/SimpleNet/testdemandpedestrian.rou.xml")))
 
@@ -239,11 +248,12 @@ def main():
 
         best_csv = []
         print("Best individual per experiment:")
+        idx = 0
         for best in best_list:
             print("Experiment: {} # Best: {} # Fitness value: {}".
-                  format(best_list.index(best), best, best.fitness.values))
-            exp = best_list.index(best)
-            best_csv.append([exp, intensity_list[exp], best, best.fitness.values])
+                  format(idx+1, best, best.fitness.values))
+            best_csv.append([idx+1, intensity_list[idx], best, best.fitness.values])
+            idx += 1
         with open('data/best_' + datetime.now().strftime('%m_%d_%Y-%H:%M:%S') + '.csv', 'w', newline='') as f:
             writer = csv.writer(f)
             writer.writerow(["Experiment", "Intensity", "Best Plan", "Best Fitness"])
@@ -251,11 +261,12 @@ def main():
 
         best_test_csv = []
         print("Best test individual per experiment:")
+        idx = 0
         for best_test in best_test_list:
             print("Experiment: {} # Best test: {} # Fitness test value: {}".
-                  format(best_test_list.index(best_test), best_test, best_test.fitness.values))
-            exp = best_test_list.index(best_test)
-            best_test_csv.append([exp, intensity_list[exp], best_test, best_test.fitness.values])
+                  format(idx+1, best_test, best_test.fitness.values))
+            best_test_csv.append([idx+1, intensity_list[idx], best_test, best_test.fitness.values])
+            idx += 1
         with open('data/best_test_' + datetime.now().strftime('%m_%d_%Y-%H:%M:%S') + '.csv', 'w', newline='') as f:
             writer = csv.writer(f)
             writer.writerow(["Experiment", "Intensity", "Best Test Plan", "Best Fitness"])
@@ -263,13 +274,15 @@ def main():
 
         v2c_csv = []
         print("Best mean value of volume two capacity ratio:")
+        idx = 0
         for v2c in v2c_list:
-            print(
-                "Experiment: {} # Individual: {} # Best volume to capacity: {}".format(v2c_list.index(v2c), v2c[0], v2c[1]))
-            v2c_csv.append([v2c_list.index(v2c), v2c[0], v2c[1]])
+            print("Experiment: {} # Individual: {} # Best volume to capacity: {}".
+                  format(idx+1, v2c[0], v2c[1]))
+            v2c_csv.append([idx+1, v2c[0], v2c[1]])
+            idx += 1
         with open('data/v2c_' + datetime.now().strftime('%m_%d_%Y-%H:%M:%S') + '.csv', 'w', newline='') as f:
             writer = csv.writer(f)
-            writer.writerow(["Experiment", "Intensity", "Best Test Plan", "Best Fitness"])
+            writer.writerow(["Experiment", "Individual", "V2C Ratio"])
             writer.writerows(v2c_csv)
 
         # Plotting

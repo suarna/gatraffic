@@ -4,8 +4,6 @@ import shutil
 import tempfile
 import xml.etree.ElementTree as ET
 
-import numpy as np
-
 
 def get_flow(demand_file):
     tree = ET.parse(demand_file)

@@ -144,14 +144,14 @@ def main():
 
     # Store best solution for the traffic intensity
     try:
-        file = open(INTERSECTION_ID+'.xml')
-
+        file = open('data/'+INTERSECTION_ID+'.xml')
     except IOError:
         print("We couldn't open the file")
-        paramstorage.create_xml_file(INTERSECTION_ID + ".xml")
+        paramstorage.create_xml_file('data/'+INTERSECTION_ID + ".xml")
     finally:
-        file = open(INTERSECTION_ID + '.xml')
-        paramstorage.add_plan('data/'+INTERSECTION_ID + '.xml', INTERSECTION_ID + "-" + str(datetime.now()), intensity, best, offset)
+        file = open('data/'+INTERSECTION_ID + '.xml')
+        paramstorage.add_plan('data/'+INTERSECTION_ID + '.xml', INTERSECTION_ID + "-" + str(datetime.now()),
+                              intensity, best, offset)
         file.close()
 
     sumoconnector.close()
