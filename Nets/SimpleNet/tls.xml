@@ -1,5 +1,5 @@
 <additionals>
-    <tlLogic id="intersection" type="static" programID="0" offset="[32, 17, 28, 32, 21]">
+    <tlLogic id="intersection" type="static" programID="0" offset="[17, 60, 16, 20, 31]">
         <phase duration="30" state="gGgrrrrrrrrrrGrG" />
         <phase duration="3" state="yyyrrrrrrrrrrgrg" />
         <phase duration="3" state="rrrrrrrrrrrrrrrr" />

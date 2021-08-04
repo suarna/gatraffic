@@ -138,8 +138,6 @@ def main():
     print(hof)
     mean_fit, max_fit, min_fit, std_fit = lb.select('mean', 'max', 'min', 'std')
     plot.plot(mean_fit, color='blue')
-    # plot.plot(min_fit, color='green')
-    # plot.plot(max_fit, color='red')
     plot.xlabel("Generations")
     plot.ylabel("Fitness Values")
     plot.savefig('Nets/SimpleNet/plots/plot-' + datetime.now().strftime('%m_%d_%Y-%H:%M:%S') + '.png')
@@ -153,7 +151,7 @@ def main():
         paramstorage.create_xml_file(INTERSECTION_ID + ".xml")
     finally:
         file = open(INTERSECTION_ID + '.xml')
-        paramstorage.add_plan(INTERSECTION_ID + '.xml', INTERSECTION_ID + "-" + str(datetime.now()), intensity, best, offset)
+        paramstorage.add_plan('data/'+INTERSECTION_ID + '.xml', INTERSECTION_ID + "-" + str(datetime.now()), intensity, best, offset)
         file.close()
 
     sumoconnector.close()

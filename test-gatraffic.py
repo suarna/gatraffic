@@ -1,5 +1,6 @@
 import random as rd
 from datetime import datetime
+import matplotlib.pyplot as plot
 
 import numpy as np
 import traci
@@ -28,11 +29,11 @@ MU = 30
 LAMBDA = 50
 P_CROSSOVER = 0.8
 P_MUTATION = 0.2
-MAX_GENERATIONS = 1
+MAX_GENERATIONS = 3
 HOF_SIZE = 6
 RANDOM_SEED = rd.randint(0, 1000)
 CONFIG_FILE_ROUTE = "Nets/SimpleNet/test-sumo.sumocfg"
-N_EXPERIMENTS = 2
+N_EXPERIMENTS = 10
 N_STEPS = n_steps
 CYCLE = 120
 MIN_PH_TIME = 15
@@ -44,6 +45,7 @@ SINGLE = False
 SEL_AL1 = False
 SEL_AL2 = False
 ADAPT = False
+NORM = 200
 INTERSECTION_ID = '101'
 
 # Define seed
@@ -142,129 +144,149 @@ v2c_list = []
 lb_list = []
 best_list = []
 best_test_list = []
+intensity_list = []
 
 
 def main():
-    for i in range(0, N_EXPERIMENTS):
-        print("-----------------------------------------------------------------------------")
-        print("EXPERIMENT NUMBER {} INITIATED".format(i+1))
-        print("-----------------------------------------------------------------------------")
-        if i != 0:
-            # Update HOF fitness for new environment conditions
+    try:
+        for i in range(0, N_EXPERIMENTS):
+            print("-----------------------------------------------------------------------------")
+            print("EXPERIMENT NUMBER {} INITIATED".format(i + 1))
+            print("-----------------------------------------------------------------------------")
+            if i != 0:
+                # Update HOF fitness for new environment conditions
+                for _ in range(len(hof)):
+                    result = sim.get_score(hof.items[_], ref_env)
+                    hof.items[_].fitness.values = result
+                    if hof.items[_] in pop:
+                        pop[pop.index(hof.items[_])].fitness.values = result
+            pop, lb = algorithms.eaMuPlusLambda(population,
+                                                toolbox,
+                                                MU,
+                                                LAMBDA,
+                                                P_CROSSOVER,
+                                                P_MUTATION,
+                                                MAX_GENERATIONS,
+                                                stats,
+                                                hof,
+                                                True)
+
+            lb_list.append(lb)
+            best = hof.items[0]
+            best_list.append(best)
+            print("\n\033[0;31;40mHOF content is: ", hof)
+            print("Best Plan = {}\033[0m".format(best))
+
+            # Apply plan to test env and read result
+            test_result = []
             for _ in range(len(hof)):
-                result = sim.get_score(hof.items[_], ref_env)
-                hof.items[_].fitness.values = result
-                if hof.items[_] in pop:
-                    pop[pop.index(hof.items[_])].fitness.values = result
-        pop, lb = algorithms.eaMuPlusLambda(population,
-                                            toolbox,
-                                            MU,
-                                            LAMBDA,
-                                            P_CROSSOVER,
-                                            P_MUTATION,
-                                            MAX_GENERATIONS,
-                                            stats,
-                                            hof,
-                                            True)
+                if ADAPT:
+                    # Adapt to cycle
+                    plan = gatraffictoolbox.adapt(hof.items[_], CYCLE, MIN_PH_TIME, MAX_PH_TIME)
+                    result = sim.get_score(plan, test_env)
+                    print("The test score for individual {} adapted from {} is : {}".format(plan, hof.items[_], result))
 
-        lb_list.append(lb)
-        best = hof.items[0]
-        best_list.append(best)
-        print("\n\033[0;31;40mHOF content is: ", hof)
-        print("Best Plan = {}\033[0m".format(best))
+                else:
+                    result = sim.get_score(hof.items[_], test_env)
+                    hof.items[_].fitness.values = result
+                    test_result.append(hof.items[_])
+                    print("The test fitness score for individual {} is : {}".format(hof.items[_], result))
 
-        # Apply plan to test env and read result
-        test_result = []
-        for _ in range(len(hof)):
-            if ADAPT:
-                # Adapt to cycle
-                plan = gatraffictoolbox.adapt(hof.items[_], CYCLE, MIN_PH_TIME, MAX_PH_TIME)
-                result = sim.get_score(plan, test_env)
-                print("The test score for individual {} adapted from {} is : {}".format(plan, hof.items[_], result))
+            # Get volume to capacity values
+            v2c = []
+            new_intensity = paramstorage.get_flow("Nets/SimpleNet/testdemandpedestrian.rou.xml")
+            for _ in range(len(hof)):
+                v2c.append(np.mean(sim.v2c(hof.items[_], new_intensity)))
+            min_idx = np.argmin(v2c)
+            v2c_list.append([hof.items[min_idx], v2c[min_idx]])
 
-            else:
-                result = sim.get_score(hof.items[_], test_env)
-                hof.items[_].fitness.values = result
-                test_result.append(hof.items[_])
-                print("The test fitness score for individual {} is : {}".format(hof.items[_], result))
+            # Select non dominated from the test set
+            best_test = tools.selNSGA2(test_result, 1)
+            best_test_list.append(hof.items[hof.items.index(best_test[0])])
 
-        # Get volume to capacity values
-        v2c = []
-        new_intensity = paramstorage.get_flow("Nets/SimpleNet/testdemandpedestrian.rou.xml")
-        for _ in range(len(hof)):
-            v2c.append(np.mean(sim.v2c(hof.items[_], new_intensity)))
-        min_idx = np.argmin(v2c)
-        v2c_list.append([hof.items[min_idx], v2c[min_idx]])
+            # Set best test offset value in the traffic light logic
+            paramstorage.set_offset("Nets/SimpleNet/tls.xml", best_test[len(best_test) - 1])
 
-        # Select non dominated from the test set
-        best_test = tools.selNSGA2(test_result, 1)
-        best_test_list.append(hof.items[hof.items.index(best_test[0])])
+            # Tuning prob flow adding or subtracting a (random(-1,1))/NORM value
+            paramstorage.set_flow("Nets/SimpleNet/testdemandpedestrian.rou.xml", NORM)
+            intensity_list.append(paramstorage.get_flow("Nets/SimpleNet/testdemandpedestrian.rou.xml"))
+            print("\033[93mThe new flow is: {}\033[0m".format(paramstorage.get_flow(
+                "Nets/SimpleNet/testdemandpedestrian.rou.xml")))
 
-        # Set best test offset value in the traffic light logic
-        paramstorage.set_offset("Nets/SimpleNet/tls.xml", best_test[len(best_test) - 1])
+            print("-----------------------------------------------------------------------------")
+            print("EXPERIMENT FINISHED")
+            print("-----------------------------------------------------------------------------")
 
-        paramstorage.set_flow("Nets/SimpleNet/testdemandpedestrian.rou.xml")
-        print("\033[93mThe new flow is: {}\033[0m".format(paramstorage.get_flow(
-            "Nets/SimpleNet/testdemandpedestrian.rou.xml")))
+        # Close environments
+        traci.switch("Test")
+        sumoconnector.close()
+        traci.switch("Reference")
+        sumoconnector.close()
+        traci.switch("default")
+        sumoconnector.close()
 
-        print("-----------------------------------------------------------------------------")
-        print("EXPERIMENT FINISHED")
-        print("-----------------------------------------------------------------------------")
+        print("Evolution:")
+        for lb in lb_list:
+            print(lb)
+        lb_dict = lb_list[0][0]
+        keys = lb_dict.keys()
+        lb_url = 'data/logbook_' + datetime.now().strftime('%m_%d_%Y-%H:%M:%S') + '.csv'
+        with open(lb_url, 'w', newline='') as f:
+            dw = csv.DictWriter(f, keys)
+            dw.writeheader()
+            for l in lb_list:
+                dw.writerows(l)
 
-    # Close environments
-    traci.switch("Test")
-    sumoconnector.close()
-    traci.switch("Reference")
-    sumoconnector.close()
-    traci.switch("default")
-    sumoconnector.close()
+        best_csv = []
+        print("Best individual per experiment:")
+        for best in best_list:
+            print("Experiment: {} # Best: {} # Fitness value: {}".
+                  format(best_list.index(best), best, best.fitness.values))
+            exp = best_list.index(best)
+            best_csv.append([exp, intensity_list[exp], best, best.fitness.values])
+        with open('data/best_' + datetime.now().strftime('%m_%d_%Y-%H:%M:%S') + '.csv', 'w', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(["Experiment", "Intensity", "Best Plan", "Best Fitness"])
+            writer.writerows(best_csv)
 
-    # Restore original xml demand data file
-    with open("Nets/SimpleNet/testdemandpedestrian.rou.xml", 'w') as original:
-        tmp = open(xml_copy.name, 'r')
-        original.write(str(tmp.read()))
+        best_test_csv = []
+        print("Best test individual per experiment:")
+        for best_test in best_test_list:
+            print("Experiment: {} # Best test: {} # Fitness test value: {}".
+                  format(best_test_list.index(best_test), best_test, best_test.fitness.values))
+            exp = best_test_list.index(best_test)
+            best_test_csv.append([exp, intensity_list[exp], best_test, best_test.fitness.values])
+        with open('data/best_test_' + datetime.now().strftime('%m_%d_%Y-%H:%M:%S') + '.csv', 'w', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(["Experiment", "Intensity", "Best Test Plan", "Best Fitness"])
+            writer.writerows(best_test_csv)
 
-    print("Evolution:")
-    for lb in lb_list:
-        print(lb)
-    lb_dict = lb_list[0][0]
-    keys = lb_dict.keys()
-    with open('people.csv', 'w', newline='') as f:
-        dw = csv.DictWriter(f, list(keys[0]))
-        dw.writeheader()
-        dw.writerows(lb_list)
+        v2c_csv = []
+        print("Best mean value of volume two capacity ratio:")
+        for v2c in v2c_list:
+            print(
+                "Experiment: {} # Individual: {} # Best volume to capacity: {}".format(v2c_list.index(v2c), v2c[0], v2c[1]))
+            v2c_csv.append([v2c_list.index(v2c), v2c[0], v2c[1]])
+        with open('data/v2c_' + datetime.now().strftime('%m_%d_%Y-%H:%M:%S') + '.csv', 'w', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(["Experiment", "Intensity", "Best Test Plan", "Best Fitness"])
+            writer.writerows(v2c_csv)
 
-    best_csv = []
-    print("Best individual per experiment:")
-    for best in best_list:
-        print("Experiment: {} # Best: {} # Fitness value: {}".
-              format(best_list.index(best), best, best.fitness.values))
-        best_csv.append([best_list.index(best), best, best.fitness.values])
-    with open('data/best.csv', 'w', newline='') as f:
-        writer = csv.writer(f)
-        writer.writerows(best_csv)
+        # Plotting
+        data = np.genfromtxt(lb_url, delimiter=",", names=["gen", "nevals", "mean"])
+        x = np.arange(0, len(data["gen"]), 1)
+        plot.plot(x, data["mean"], color='blue')
+        plot.xlabel("Generations")
+        plot.ylabel("Mean of Fitness")
+        plot.savefig('Nets/SimpleNet/plots/test-' + datetime.now().strftime('%m_%d_%Y-%H:%M:%S') + '.png')
 
-    best_test_csv = []
-    print("Best test individual per experiment:")
-    for best_test in best_test_list:
-        print("Experiment: {} # Best test: {} # Fitness test value: {}".
-              format(best_test_list.index(best_test), best_test, best_test.fitness.values))
-        best_test_csv.append([best_test_list.index(best_test), best_test, best_test.fitness.values])
-    with open('data/best_test.csv', 'w', newline='') as f:
-        writer = csv.writer(f)
-        writer.writerows(best_test_csv)
-
-    v2c_csv = []
-    print("Best mean value of volume two capacity ratio:")
-    for v2c in v2c_list:
-        print("Experiment: {} # Individual: {} # Best volume to capacity: {}".format(v2c_list.index(v2c), v2c[0], v2c[1]))
-        v2c_csv.append([v2c_list.index(v2c), v2c[0], v2c[1]])
-    with open('data/v2c.csv', 'w', newline='') as f:
-        writer = csv.writer(f)
-        writer.writerows(v2c_csv)
-
-    print("\nThe initial time was: {}".format(initial_time))
-    print("The final time is: {}".format(datetime.now()))
+        print("\nThe initial time was: {}".format(initial_time))
+        print("The final time is: {}".format(datetime.now()))
+    finally:
+        # Restore original xml demand data file
+        with open("Nets/SimpleNet/testdemandpedestrian.rou.xml", 'w') as original:
+            tmp = open(xml_copy.name, 'r')
+            original.write(str(tmp.read()))
 
 
 if __name__ == "__main__":

@@ -12,7 +12,7 @@ def get_flow(demand_file):
     root = tree.getroot()
     lanes = list()
     gauge = list()
-    gauge_list = list()
+    gauge_list = []
     for flow in root.iter('flow'):
         lanes.append(flow.attrib.get('from'))
         gauge.append(float(flow.attrib.get('probability')) * 3600)
@@ -23,16 +23,16 @@ def get_flow(demand_file):
         val = 0
         for n in range(len(idx)):
             val += gauge[idx[n]]
-        gauge_list.append(val)
-    return np.round(gauge_list)
+        gauge_list.append(int(val))
+    return gauge_list
 
 
-def set_flow(demand_file):
+def set_flow(demand_file, change):
     tree = ET.parse(demand_file)
     root = tree.getroot()
     for flow in root.iter('flow'):
         current_flow = flow.attrib.get('probability')
-        current_flow = str(float(current_flow) + (random.uniform(-1, 1) / 200))
+        current_flow = str(float(current_flow) + (random.uniform(-1, 1) / change))
         if float(current_flow) > 0:
             flow.set('probability', current_flow)
     tree.write(demand_file)
