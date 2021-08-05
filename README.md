@@ -58,7 +58,7 @@ or
 
 https://hub.docker.com/search?q=&type=edition&offering=community  
 
-and follow installation instructions.
+-Open a terminal and follow the installation instructions.
 
 -Download the image from the docker HUB repository:
 
@@ -68,7 +68,7 @@ and follow installation instructions.
 
 `sudo docker run -it --name gataffic suarna/gatraffic:latest bash`
 
--If everything works fine, a prompt, something similar to this should appear:
+-If everything works fine, a prompt, something similar to this, should appear:
 
 `root@b0d1305bac4b:/app#`
 
@@ -77,6 +77,8 @@ and follow installation instructions.
 `python3.8 gatraffic.py`
 or
 `python3.8 test-gatraffic.py`
+
+-That's all for begin to experiment.
 
 -Once the experiments have finished you can leave the container using 
 `Ctrl+p followed by Ctrl+q` combination, in this case the container remains active, 
@@ -152,10 +154,12 @@ SEL_AL1 = False
 SEL_AL2 = False  
 ADAPT = False  
 INTERSECTION_ID = '101'   
-NORM = 200  
+BOUND = 0.02  
 
 -The parameters SINGLE, AL_1 and AL_2 when set to True are used to compute with other selection algorithms, SPEA2 and 
 selNSGA3, selecting SINGLE we select the best individual.
+
+-The bound parameter states how randomized the simulation is, 0,02 is a quite high value. 
 
 ### OTHER PARAMETERS 
 
@@ -168,3 +172,8 @@ changing the flow probabilities and begin end simulation parameters, the same ap
 
 _**It is important that the simulation duration takes the same begin and en values 
 for all the flows_
+
+### OUTPUT RESULTS
+
+The simulation results are stored in files in the folder `data/`, the output plots are stored into the folder 
+`Net/SimpleNet/plots`, in both cases the files are stored with names related with its content and date and time info.
