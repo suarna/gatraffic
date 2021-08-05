@@ -64,11 +64,12 @@ def getinfo(tls_file_route: str, net_file_route: str, additional_file_route: str
 
 class TrafficEnv:
 
-    def __init__(self, config_file_route, n_steps, n_phases, det_ids_list, single: bool):
+    def __init__(self, config_file_route, n_steps, n_phases, det_ids_list, single: bool, fit_list: list):
         self.config_file_route = config_file_route
         self.n_steps = n_steps
         self.n_phases = n_phases
         self.det_ids_list = det_ids_list
+        self.fit_list = fit_list
         self.single = single
 
     def runs(self):
@@ -79,7 +80,8 @@ class TrafficEnv:
                                           self.n_phases,
                                           self.n_steps,
                                           self.config_file_route,
-                                          self.det_ids_list)
+                                          self.det_ids_list,
+                                          self.fit_list)
         env()
         return env
 

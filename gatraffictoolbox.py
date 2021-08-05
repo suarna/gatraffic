@@ -1,6 +1,8 @@
 import random
+from datetime import datetime
 
 import numpy as np
+import matplotlib.pyplot as plot
 
 
 def adapt(individual, cycle, lower_limit, upper_limit):
@@ -34,6 +36,9 @@ def adapt(individual, cycle, lower_limit, upper_limit):
     return arr
 
 
+# function that returns the moving average
+def ma(data, w: int):
+    return np.convolve(data, np.ones(w), 'valid') / w
 
 
 

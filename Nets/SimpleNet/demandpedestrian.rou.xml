@@ -60,11 +60,11 @@
     <flow id="flow_WE" begin="0.00" color="yellow" from="WI" to="IE" end="450.00" probability="0.06"/>
     <flow id="flow_WN" begin="0.00" color="yellow" from="WI" to="IN" end="450.00" probability="0.06"/>
     <flow id="flow_WS" begin="0.00" color="yellow" from="WI" to="IS" end="450.00" probability="0.06"/>
-    <flow id="flow_EN" begin="0.00" color="green" from="EI" to="IN" end="450.00" probability="0.005"/>
+    <flow id="flow_EN" begin="0.00" color="green" from="EI" to="IN" end="450.00" probability="0.05"/>
     <flow id="flow_ES" begin="0.00" color="green" from="EI" to="IS" end="450.00" probability="0.025"/>
-    <flow id="flow_EW" begin="0.00" color="green" from="EI" to="IW" end="450.00" probability="0.005"/>
+    <flow id="flow_EW" begin="0.00" color="green" from="EI" to="IW" end="450.00" probability="0.05"/>
     <flow id="flow_SE" begin="0.00" color="blue" from="SI" to="IE" end="450.00" probability="0.01"/>
-    <flow id="flow_SN" begin="0.00" color="blue" from="SI" to="IN" end="450.00" probability="0.01"/>
+    <flow id="flow_SN" begin="0.00" color="blue" from="SI" to="IN" end="450.00" probability="0.02"/>
     <flow id="flow_SW" begin="0.00" color="blue" from="SI" to="IW" end="450.00" probability="0.01"/>
     <personFlow id="personFlow_E" begin="0.00" end="450.00" probability="0.010">
         <personTrip from="EI" to="IW"/>

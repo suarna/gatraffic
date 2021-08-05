@@ -21,7 +21,7 @@ def start_sim(sumocfg: str):
 
 class SimulationEnv(py_environment.PyEnvironment, ABC):
 
-    def __init__(self, label, n_phases, n_steps, config_file_route: str, det_ids):
+    def __init__(self, label, n_phases, n_steps, config_file_route: str, det_ids, fit_list: None):
         super().__init__()
         # Label of the selected environment
         self.label = label
@@ -44,6 +44,7 @@ class SimulationEnv(py_environment.PyEnvironment, ABC):
         self.jam = np.ndarray((len(self.det_ids),), dtype=np.float32)
         self.cycle = 0
         self.config_file_route = config_file_route
+        self.fit_list = fit_list
 
     def __call__(self):
         sumoconnector.start(self.config_file_route, label=self.label)
@@ -97,6 +98,7 @@ class SimulationEnv(py_environment.PyEnvironment, ABC):
             self.reward = self.jam / self.n_steps
             print("\n\033[96m---------------------------------------------------------------------------"
                   "-----------Simulation Round Finished")
+            self.fit_list.append(self.reward)
             return time_step.termination(np.array(self._state), reward=self.reward)
         else:
             return time_step.transition(np.array(self._state), reward=0)

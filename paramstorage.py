@@ -30,7 +30,7 @@ def set_flow(demand_file, change):
     root = tree.getroot()
     for flow in root.iter('flow'):
         current_flow = flow.attrib.get('probability')
-        current_flow = str(float(current_flow) + (random.uniform(-1, 1) / change))
+        current_flow = str(float(current_flow) + (random.uniform(-change, change)))
         if float(current_flow) > 0:
             flow.set('probability', current_flow)
     tree.write(demand_file)

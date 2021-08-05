@@ -9,6 +9,7 @@ from deap import base
 from deap import creator
 from deap import tools
 
+import gatraffictoolbox
 import paramstorage
 import sumoconnector
 import trafficinteract
@@ -28,7 +29,7 @@ MU = 30
 LAMBDA = 50
 P_CROSSOVER = 0.8
 P_MUTATION = 0.2
-MAX_GENERATIONS = 2
+MAX_GENERATIONS = 25
 HOF_SIZE = 6
 RANDOM_SEED = rd.randint(0, 1000)
 CONFIG_FILE_ROUTE = "Nets/SimpleNet/sumo.sumocfg"
@@ -45,7 +46,7 @@ rd.seed(RANDOM_SEED)
 
 print("\nThe random seed for this simulation is: ", RANDOM_SEED)
 intensity = paramstorage.get_flow("Nets/SimpleNet/demandpedestrian.rou.xml")
-print("The flow vehicles/h are: {}", format(intensity))
+print("The flow vehicles/h are: {}".format(intensity))
 
 # (mean, std)
 weights = (-1.0, -1.0, -1.0)
@@ -81,7 +82,8 @@ def pareto_eq(ind1, ind2):
 hof = tools.ParetoFront(similar=pareto_eq)
 
 # Run simulation
-sim = trafficinteract.TrafficEnv(CONFIG_FILE_ROUTE, N_STEPS, CHROMOSOME_LENGTH, det_ids_list, False)
+fit_list = list()
+sim = trafficinteract.TrafficEnv(CONFIG_FILE_ROUTE, N_STEPS, CHROMOSOME_LENGTH, det_ids_list, False, fit_list)
 sim.runs()
 # Running original environment
 ref_env = sim.rune("Reference")
@@ -137,10 +139,19 @@ def main():
     print(lb)
     print(hof)
     mean_fit, max_fit, min_fit, std_fit = lb.select('mean', 'max', 'min', 'std')
+    plot.figure(0)
     plot.plot(mean_fit, color='blue')
     plot.xlabel("Generations")
     plot.ylabel("Fitness Values")
     plot.savefig('Nets/SimpleNet/plots/plot-' + datetime.now().strftime('%m_%d_%Y-%H:%M:%S') + '.png')
+    plot.figure(1)
+    plot.xlabel("Individuals tested")
+    plot.ylabel("MA50 of jam length values")
+    for lane in range(0, len(det_ids_list)):
+        # Compute the moving average per 50 plans
+        jam_ma = gatraffictoolbox.ma(list(zip(*fit_list))[lane], 50)
+        plot.plot(np.arange(0, len(jam_ma), 1), jam_ma, color="C{}".format(lane))
+    plot.savefig('Nets/SimpleNet/plots/jam-' + datetime.now().strftime('%m_%d_%Y-%H:%M:%S') + '.png')
 
     # Store best solution for the traffic intensity
     try:

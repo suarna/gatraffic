@@ -30,7 +30,7 @@ MU = 30
 LAMBDA = 50
 P_CROSSOVER = 0.8
 P_MUTATION = 0.2
-MAX_GENERATIONS = 3
+MAX_GENERATIONS = 6
 HOF_SIZE = 6
 RANDOM_SEED = rd.randint(0, 1000)
 CONFIG_FILE_ROUTE = "Nets/SimpleNet/test-sumo.sumocfg"
@@ -44,8 +44,8 @@ MAX_OFFS_TIME = 100
 SINGLE = False
 SEL_AL1 = False
 SEL_AL2 = False
-ADAPT = False
-NORM = 200
+ADAPT = True
+BOUND = 0.02
 INTERSECTION_ID = '101'
 
 # Define seed
@@ -105,7 +105,8 @@ else:
     hof = tools.ParetoFront(similar=pareto_eq)
 
 # Run simulation
-sim = trafficinteract.TrafficEnv(CONFIG_FILE_ROUTE, N_STEPS, CHROMOSOME_LENGTH, det_ids_list, SINGLE)
+fit_list = list()
+sim = trafficinteract.TrafficEnv(CONFIG_FILE_ROUTE, N_STEPS, CHROMOSOME_LENGTH, det_ids_list, SINGLE, fit_list)
 sim.runs()
 # Running original environment
 ref_env = sim.rune("Reference")
@@ -215,8 +216,8 @@ def main():
             # Set best test offset value in the traffic light logic
             paramstorage.set_offset("Nets/SimpleNet/tls.xml", best_test[len(best_test) - 1])
 
-            # Tuning prob flow adding or subtracting a (random(-1,1))/NORM value
-            paramstorage.set_flow("Nets/SimpleNet/testdemandpedestrian.rou.xml", NORM)
+            # Tuning prob flow adding or subtracting a (random(-bound,bound))
+            paramstorage.set_flow("Nets/SimpleNet/testdemandpedestrian.rou.xml", BOUND)
             if i != 0:
                 intensity_list.append(paramstorage.get_flow("Nets/SimpleNet/testdemandpedestrian.rou.xml"))
             print("\033[93mThe new flow is: {}\033[0m".format(paramstorage.get_flow(
@@ -288,10 +289,20 @@ def main():
         # Plotting
         data = np.genfromtxt(lb_url, delimiter=",", names=["gen", "nevals", "mean"])
         x = np.arange(0, len(data["gen"]), 1)
+        plot.figure(0)
         plot.plot(x, data["mean"], color='blue')
         plot.xlabel("Generations")
         plot.ylabel("Mean of Fitness")
         plot.savefig('Nets/SimpleNet/plots/test-' + datetime.now().strftime('%m_%d_%Y-%H:%M:%S') + '.png')
+
+        plot.figure(1)
+        plot.xlabel("Individuals tested")
+        plot.ylabel("MA50 of jam length values")
+        for lane in range(0, len(det_ids_list)):
+            # Compute the moving average per 50 plans
+            jam_ma = gatraffictoolbox.ma(list(zip(*fit_list))[lane], 50)
+            plot.plot(np.arange(0, len(jam_ma), 1), jam_ma, color="C{}".format(lane))
+        plot.savefig('Nets/SimpleNet/plots/jam_test-' + datetime.now().strftime('%m_%d_%Y-%H:%M:%S') + '.png')
 
         print("\nThe initial time was: {}".format(initial_time))
         print("The final time is: {}".format(datetime.now()))
