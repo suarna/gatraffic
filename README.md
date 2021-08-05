@@ -66,7 +66,7 @@ and follow installation instructions.
 
 -Run the image with the following command:
 
-`sudo docker run -it --name gataffic suarna/gatraffic:latest`
+`sudo docker run -it --name gataffic suarna/gatraffic:latest bash`
 
 -If everything works fine, a prompt, something similar to this should appear:
 
@@ -78,17 +78,35 @@ and follow installation instructions.
 or
 `python3.8 test-gatraffic.py`
 
--Once the experiments are finished you can leave the container using 
+-Once the experiments have finished you can leave the container using 
 `Ctrl+p followed by Ctrl+q` combination, in this case the container remains active, 
-if you type `exit` the container will stop.
+if you type `exit` the container will stop. 
+
+-To reconnect a running container
+
+`sudo docker exec -it gatraffic bash`   
+
+-To connect as superuser and install extra applications you can do it using:
+
+`sudo docker exec -u 0 -it gatraffic bash `
 
 -If you want to restart the image type and attach the prompt:
 
-`sudo docker container start gataffic && docker attach gataffic`
+`sudo docker container start gataffic && sudo docker attach gataffic`
+
+-If you want to delete it once stopped ,simply write:
+
+`sudo docker container rm gatraffic`
+
+-If it is not stopped yet:
+
+`sudo docker container stop gatraffic && sudo docker rm gatraffic`
+
 
 ## Editing execution parameters:
 
--The parameters are changed editing the gatraffic.py and test-gatraffic.py files:
+-The parameters are changed editing the gatraffic.py and test-gatraffic.py files, the nano utility is installed along 
+with the docker image:
 
 ### PARAMETERS GATRAFFIC.PY
 
