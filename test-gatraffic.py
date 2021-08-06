@@ -52,8 +52,9 @@ INTERSECTION_ID = '101'
 rd.seed(RANDOM_SEED)
 
 intensity = paramstorage.get_flow("Nets/SimpleNet/testdemandpedestrian.rou.xml")
-# Store a tmp file of demand data file
-xml_copy = paramstorage.temp_xml("Nets/SimpleNet/testdemandpedestrian.rou.xml")
+# Store a tmp copy of demand and tls data files
+xml_copy_demand = paramstorage.temp_xml("Nets/SimpleNet/testdemandpedestrian.rou.xml")
+xml_copy_tls = paramstorage.temp_xml("Nets/SimpleNet/tls.xml")
 print("\033[93mThe flow in vehicles/h is: {}\033[0m".format(intensity))
 
 if SINGLE:
@@ -307,9 +308,12 @@ def main():
         print("\nThe initial time was: {}".format(initial_time))
         print("The final time is: {}".format(datetime.now()))
     finally:
-        # Restore original xml demand data file
+        # Restore original xml demand and tls data files
         with open("Nets/SimpleNet/testdemandpedestrian.rou.xml", 'w') as original:
-            tmp = open(xml_copy.name, 'r')
+            tmp = open(xml_copy_demand.name, 'r')
+            original.write(str(tmp.read()))
+        with open("Nets/SimpleNet/tls.xml", 'w') as original:
+            tmp = open(xml_copy_tls.name, 'r')
             original.write(str(tmp.read()))
 
 
