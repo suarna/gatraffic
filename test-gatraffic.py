@@ -28,7 +28,6 @@ init_state, n_phases, np_phases, n_steps, det_ids_list, offset = trafficinteract
 # LOAD HYPER-PARAMETERS FROM FILE
 hyper_params = params('@param_test.txt')
 print("Loaded parameters are: {}".format(hyper_params))
-print(hyper_params)
 for key, val in hyper_params.items():
     exec(key + '=val')
 
