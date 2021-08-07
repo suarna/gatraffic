@@ -11,18 +11,18 @@
     <route edges="SI IE" color="blue" id="route_SE" />
     <route edges="SI IN" color="blue" id="route_SN" />
     <route edges="SI IW" color="blue" id="route_SW" />
-    <flow id="flow_NE" begin="0.00" color="red" from="NI" to="IE" end="450.00" probability="0.040277973958646726" />
-    <flow id="flow_NS" begin="0.00" color="red" from="NI" to="IS" end="450.00" probability="0.05312813153585626" />
-    <flow id="flow_NW" begin="0.00" color="red" from="NI" to="IW" end="450.00" probability="0.03831746971094717" />
-    <flow id="flow_WE" begin="0.00" color="yellow" from="WI" to="IE" end="450.00" probability="0.02008908602557681" />
-    <flow id="flow_WN" begin="0.00" color="yellow" from="WI" to="IN" end="450.00" probability="0.016971162427479855" />
-    <flow id="flow_WS" begin="0.00" color="yellow" from="WI" to="IS" end="450.00" probability="0.013353249583870559" />
-    <flow id="flow_EN" begin="0.00" color="green" from="EI" to="IN" end="450.00" probability="0.0017682640900847073" />
-    <flow id="flow_ES" begin="0.00" color="green" from="EI" to="IS" end="450.00" probability="0.0021802124875396067" />
-    <flow id="flow_EW" begin="0.00" color="green" from="EI" to="IW" end="450.00" probability="0.017888719487703614" />
-    <flow id="flow_SE" begin="0.00" color="blue" from="SI" to="IE" end="450.00" probability="0.04075298105002172" />
-    <flow id="flow_SN" begin="0.00" color="blue" from="SI" to="IN" end="450.00" probability="0.04414979318017641" />
-    <flow id="flow_SW" begin="0.00" color="blue" from="SI" to="IW" end="450.00" probability="0.03847634931143983" />
+    <flow id="flow_NE" begin="0.00" color="red" from="NI" to="IE" end="450.00" probability="0.04"/>
+    <flow id="flow_NS" begin="0.00" color="red" from="NI" to="IS" end="450.00" probability="0.04"/>
+    <flow id="flow_NW" begin="0.00" color="red" from="NI" to="IW" end="450.00" probability="0.04"/>
+    <flow id="flow_WE" begin="0.00" color="yellow" from="WI" to="IE" end="450.00" probability="0.01"/>
+    <flow id="flow_WN" begin="0.00" color="yellow" from="WI" to="IN" end="450.00" probability="0.01"/>
+    <flow id="flow_WS" begin="0.00" color="yellow" from="WI" to="IS" end="450.00" probability="0.01"/>
+    <flow id="flow_EN" begin="0.00" color="green" from="EI" to="IN" end="450.00" probability="0.01"/>
+    <flow id="flow_ES" begin="0.00" color="green" from="EI" to="IS" end="450.00" probability="0.02"/>
+    <flow id="flow_EW" begin="0.00" color="green" from="EI" to="IW" end="450.00" probability="0.02"/>
+    <flow id="flow_SE" begin="0.00" color="blue" from="SI" to="IE" end="450.00" probability="0.03"/>
+    <flow id="flow_SN" begin="0.00" color="blue" from="SI" to="IN" end="450.00" probability="0.03"/>
+    <flow id="flow_SW" begin="0.00" color="blue" from="SI" to="IW" end="450.00" probability="0.03"/>
     <personFlow id="personFlow_E" begin="0.00" end="450.00" probability="0.10">
         <personTrip from="EI" to="IW" />
     </personFlow>

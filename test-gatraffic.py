@@ -15,6 +15,7 @@ import gatraffictoolbox
 import paramstorage
 import sumoconnector
 import trafficinteract
+from parameters import *
 
 initial_time = datetime.now()
 init_state, n_phases, np_phases, n_steps, det_ids_list, offset = trafficinteract.getinfo(
@@ -23,33 +24,20 @@ init_state, n_phases, np_phases, n_steps, det_ids_list, offset = trafficinteract
     "Nets/SimpleNet/additional.add.xml",
     "Nets/SimpleNet/testdemandpedestrian.rou.xml")
 
-# CONSTANT PARAMETERS
+
+# LOAD HYPER-PARAMETERS FROM FILE
+hyper_params = params('@param_test.txt')
+print("Loaded parameters are: {}".format(hyper_params))
+print(hyper_params)
+for key, val in hyper_params.items():
+    exec(key + '=val')
+
+# DECLARE MORE PARAMETERS
 CHROMOSOME_LENGTH = np_phases + 1
-POPULATION_SIZE = 150
-MU = 30
-LAMBDA = 50
-P_CROSSOVER = 0.8
-P_MUTATION = 0.2
-MAX_GENERATIONS = 6
-HOF_SIZE = 6
-RANDOM_SEED = rd.randint(0, 1000)
-CONFIG_FILE_ROUTE = "Nets/SimpleNet/test-sumo.sumocfg"
-N_EXPERIMENTS = 10
-N_STEPS = n_steps
-CYCLE = 120
-MIN_PH_TIME = 15
 MAX_PH_TIME = CYCLE - (MIN_PH_TIME * np_phases)
-MIN_OFFS_TIME = 0
-MAX_OFFS_TIME = 100
-SINGLE = False
-SEL_AL1 = False
-SEL_AL2 = False
-ADAPT = True
-BOUND = 0.02
-INTERSECTION_ID = '101'
 
 # Define seed
-rd.seed(RANDOM_SEED)
+rd.seed(rd.randint(0, 1000))
 
 intensity = paramstorage.get_flow("Nets/SimpleNet/testdemandpedestrian.rou.xml")
 # Store a tmp copy of demand and tls data files
@@ -107,7 +95,7 @@ else:
 
 # Run simulation
 fit_list = list()
-sim = trafficinteract.TrafficEnv(CONFIG_FILE_ROUTE, N_STEPS, CHROMOSOME_LENGTH, det_ids_list, SINGLE, fit_list)
+sim = trafficinteract.TrafficEnv(CONFIG_FILE_ROUTE, n_steps, CHROMOSOME_LENGTH, det_ids_list, SINGLE, fit_list)
 sim.runs()
 # Running original environment
 ref_env = sim.rune("Reference")

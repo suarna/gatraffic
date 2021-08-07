@@ -107,12 +107,11 @@ if you type `exit` the container will stop.
 
 ## Editing execution parameters:
 
--The parameters are changed editing the gatraffic.py and test-gatraffic.py files, the nano utility is installed along 
+-The parameters are changed editing the parameter files @param.txt and @param_test.txt files, the nano utility is installed along 
 with the docker image:
 
 ### PARAMETERS GATRAFFIC.PY
 
-CHROMOSOME_LENGTH = np_phases + 1  
 POPULATION_SIZE = 150  
 MU = 30  
 LAMBDA = 50  
@@ -120,12 +119,9 @@ P_CROSSOVER = 0.8
 P_MUTATION = 0.2  
 MAX_GENERATIONS = 2  
 HOF_SIZE = 6
-RANDOM_SEED = rd.randint(0, 1000)
-CONFIG_FILE_ROUTE = "Nets/SimpleNet/sumo.sumocfg"  
-N_STEPS = n_steps  
+CONFIG_FILE_ROUTE = "Nets/SimpleNet/sumo.sumocfg"   
 CYCLE = 120  
-MIN_PH_TIME = 15  
-MAX_PH_TIME = CYCLE-(MIN_PH_TIME*np_phases)  
+MIN_PH_TIME = 15
 MIN_OFFS_TIME = 0  
 MAX_OFFS_TIME = 100  
 INTERSECTION_ID = '101'  `
