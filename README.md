@@ -23,18 +23,18 @@ or using a docker image downloaded from https://hub.docker.com/repository/docker
 
   `$SUMO_HOME=/usr/share/sumo`
 
--The best way to satisfy the dependencies is creating a virtual environment into the project main folder, we need to 
+-The best way to satisfy the dependencies is creating a virtual environment **into the project main folder**, we need to 
 satisfy some dependencies:
 
 `sudo apt-get install python3.8`
 
 `sudo apt-get install python3-pip`
 
-`sudo pip3.8 install virtualenv`
+`sudo pip3 install virtualenv`
 
 -Finally we can create the environment:
 
-`virtualenv -r /usr/bin/python3.8 venv`
+`python3.8 -m virtualenv venv`
  
 -Enable Python Virtual Environment using the following command:
   
