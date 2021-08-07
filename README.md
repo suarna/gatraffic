@@ -107,8 +107,10 @@ if you type `exit` the container will stop.
 
 ## Editing execution parameters:
 
--The parameters are changed editing the parameter files @param.txt and @param_test.txt files, the nano utility is installed along 
+-The parameters are changed editing the parameter files @param.txt and @param_test.txt, the nano utility is installed along 
 with the docker image:
+
+`nano @param.txt` or `nano @param_test.txt`
 
 ### PARAMETERS GATRAFFIC.PY
 
