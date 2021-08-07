@@ -112,7 +112,7 @@ with the docker image:
 
 `nano @param.txt` or `nano @param_test.txt`
 
-### PARAMETERS GATRAFFIC.PY
+### PARAMETERS GATRAFFIC.PY (@param.txt)
 
 POPULATION_SIZE = 150  
 MU = 30  
@@ -128,7 +128,7 @@ MIN_OFFS_TIME = 0
 MAX_OFFS_TIME = 100  
 INTERSECTION_ID = '101'  `
 
-### PARAMETERS TEST-GATRAFFIC.PY
+### PARAMETERS TEST-GATRAFFIC.PY (@param_test.txt)
 
 CHROMOSOME_LENGTH = np_phases + 1  
 POPULATION_SIZE = 150  
