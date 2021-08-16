@@ -5,7 +5,15 @@ import numpy as np
 import matplotlib.pyplot as plot
 
 
-def adapt(individual, cycle, lower_limit, upper_limit):
+def adapt(individual, cycle: int, lower_limit: int, upper_limit: int):
+    """Adapt the cycle to a fixed parameters, the time is fairly distributed
+    :param individual: The plan chromosome
+    :param cycle: cycle length
+    :param lower_limit: lower allowed time value
+    :param upper_limit: upper allowed time value
+    :return: A list with new phase length
+    """
+
     length = len(individual)-1
     div = []
     arr = individual[0:length]
@@ -38,6 +46,13 @@ def adapt(individual, cycle, lower_limit, upper_limit):
 
 # function that returns the moving average
 def ma(data, w: int):
+    """Function to compute the moving average
+
+    :param data: a list with the values to be computed
+    :param w: the window used to compute the convolution, for example, 50 for MA-50
+    :return:An ndarray with the result of the ma
+
+    """
     return np.convolve(data, np.ones(w), 'valid') / w
 
 

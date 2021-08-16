@@ -49,7 +49,7 @@ if SINGLE:
     creator.create("FitnessSingle", base.Fitness, weights=weights)
     creator.create("Individual", list, fitness=creator.FitnessSingle)
 else:
-    # (divergence, mean, std)
+    # (mean, std, divergence)
     weights = (-1.0, -1.0, -1.0)
     # Define creator
     # Define minimize strategy
@@ -57,8 +57,8 @@ else:
     # Gen class
     creator.create("Individual", list, fitness=creator.FitnessMulti)
 
-
 # -----------------------------------------------------------------------------------------
+
 
 # Define score function
 def score(individual, env):

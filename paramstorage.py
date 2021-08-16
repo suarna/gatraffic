@@ -4,8 +4,16 @@ import shutil
 import tempfile
 import xml.etree.ElementTree as ET
 
+import gatraffictoolbox
+
 
 def get_flow(demand_file):
+    """Obtain flow expected values from demand file
+
+    :param demand_file: Demand xml file sumo compatible
+    :return: A list containing the expected value for an hour of simulation
+    """
+
     tree = ET.parse(demand_file)
     root = tree.getroot()
     lanes = list()
@@ -25,7 +33,12 @@ def get_flow(demand_file):
     return gauge_list
 
 
-def set_flow(demand_file, change):
+def set_flow(demand_file: str, change: float):
+    """Set probability parameter in flow file
+
+    :param demand_file: Route to the demand xml file sumo compatible
+    :param change: The flow probability parameter to apply
+    """
     tree = ET.parse(demand_file)
     root = tree.getroot()
     for flow in root.iter('flow'):
@@ -36,7 +49,13 @@ def set_flow(demand_file, change):
     tree.write(demand_file)
 
 
-def set_offset(tls_file, new_offset):
+def set_offset(tls_file: str, new_offset):
+    """Function to update the offset parameter
+
+    :param tls_file: The traffic light sumo compatible file
+    :param new_offset: The offset parameter to be updated
+
+    """
     tree = ET.parse(tls_file)
     root = tree.getroot()
     for offset in root.iter('tlLogic'):
@@ -52,13 +71,25 @@ def idx_lanes(lanes):
 
 
 def create_xml_file(filename: str):
-    # Create xml structure
+    """Create a new xml file
+
+    :param filename: Name of the new file
+    """
     intersection = ET.Element('intersection')
     file = open(filename, "wb")
     file.write(ET.tostring(intersection))
 
 
 def add_plan(filename, id, intensity: list, bestplan: list, offset):
+    """Function that adds a plan to a xml file
+
+    :param filename: File name where store the plan
+    :param id: Identity of the intersection
+    :param intensity: Intensity flow
+    :param bestplan: Best plan to be stored
+    :param offset: Offset parameter to be stored
+
+    """
     tree = ET.parse(filename)
     intersection = tree.getroot()
     plan = ET.SubElement(intersection, 'plan')
@@ -70,6 +101,11 @@ def add_plan(filename, id, intensity: list, bestplan: list, offset):
 
 
 def temp_xml(path):
+    """Creates a temporary file to save the parameters between executions
+
+    :param path: Path to the file to copy
+    :return: Temporary file
+    """
     tmp = tempfile.NamedTemporaryFile(delete=True)
     shutil.copy2(path, tmp.name)
     return tmp

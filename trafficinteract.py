@@ -8,6 +8,16 @@ import tlenvironment
 
 
 def getinfo(tls_file_route: str, net_file_route: str, additional_file_route: str, demand_file_route: str):
+    """Get all necessary info from the network to simulate using sumo xml files
+
+    :param tls_file_route: Route to traffic light file
+    :param net_file_route: Route ot network file
+    :param additional_file_route: Route to additional element file (detectors)
+    :param demand_file_route: Route to demand files
+    :return Initial State, Number of phases, Number of stable phases, Number of simulation steps, Detectors list,
+    Offset parameter retrieved from file
+    """
+
     # Parsing xml files
     tls_file = minidom.parse(tls_file_route)
     net_file = minidom.parse(net_file_route)
@@ -63,6 +73,10 @@ def getinfo(tls_file_route: str, net_file_route: str, additional_file_route: str
 
 
 class TrafficEnv:
+    """
+    Class defining a simulation environment
+
+    """
 
     def __init__(self, config_file_route, n_steps, n_phases, det_ids_list, single: bool, fit_list: list):
         self.config_file_route = config_file_route
@@ -73,9 +87,17 @@ class TrafficEnv:
         self.single = single
 
     def runs(self):
+        """Run the traffic env simulation
+
+        """
         tlenvironment.start_sim(self.config_file_route)
 
-    def rune(self, label):
+    def rune(self, label: str):
+        """Run the environment selected by the label
+
+        :param label: Label of the environment
+        :return: Simulation Environment
+        """
         env = tlenvironment.SimulationEnv(label,
                                           self.n_phases,
                                           self.n_steps,
@@ -86,6 +108,12 @@ class TrafficEnv:
         return env
 
     def v2c(self, plan, intensity):
+        """Computes the volume to capacity ratio
+
+        :param plan: A plan individual
+        :param intensity: The expected intensity obtained from the demand file
+        :return: The mean volume to capacity ratio parameter
+        """
         v2c = []
         phases = plan[0:len(plan)-1]
         # Two 3 second transitory per stable phase
@@ -97,6 +125,14 @@ class TrafficEnv:
         return np.mean(v2c)
 
     def get_score(self, individual, env: tlenvironment.SimulationEnv):
+        """Fitness function, connects with simulation, obtain reward and
+        builds the multi-objective functions vector for the individual
+
+        :param individual: The plan to be evalueated
+        :param env: The environment where apply
+        :return: A tuple with the scores for the three objective functions
+        """
+
         verbose = True
         ctr = 0
         ts = env.reset()
