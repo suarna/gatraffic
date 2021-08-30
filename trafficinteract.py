@@ -147,7 +147,7 @@ class TrafficEnv:
         scores = list()
         mean = np.mean(ts.reward)
         std = np.std(ts.reward)
-        div = np.abs(np.sum(np.gradient(ts.reward)))
+        div = np.abs(np.sum(np.gradient(ts.reward, edge_order=2)))
         if self.single:
             scores.append(np.mean([mean, std, div]))
         else:
