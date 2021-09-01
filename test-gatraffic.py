@@ -10,6 +10,7 @@ from deap import algorithms
 from deap import base
 from deap import creator
 from deap import tools
+from matplotlib.font_manager import FontProperties
 
 import gatraffictoolbox
 import paramstorage
@@ -286,12 +287,18 @@ def main():
         plot.figure(1)
         plot.xlabel("Individuals tested")
         plot.ylabel("MA50 of jam length values")
+        font_p = FontProperties()
+        font_p.set_size('xx-small')
+        plt = []
+        legends = []
         for lane in range(0, len(det_ids_list)):
             # Compute the moving average per 50 plans
             jam_ma = gatraffictoolbox.ma(list(zip(*fit_list))[lane], 50)
-            plot.plot(np.arange(0, len(jam_ma), 1), jam_ma, color="C{}".format(lane))
+            plt += plot.plot(np.arange(0, len(jam_ma), 1), jam_ma, color="C{}".format(lane))
+            legends.append('Lane {}'.format(lane+1))
+        plot.legend(plt[:len(plt)], legends, bbox_to_anchor=(1.12, 1), loc='upper right',
+                    frameon=False, title='Lanes', prop=font_p)
         plot.savefig('Nets/SimpleNet/plots/jam_test-' + datetime.now().strftime('%m_%d_%Y-%H:%M:%S') + '.png')
-
         print("\nThe initial time was: {}".format(initial_time))
         print("The final time is: {}".format(datetime.now()))
     finally:
