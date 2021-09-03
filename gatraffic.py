@@ -133,15 +133,16 @@ def main():
     mean_fit, max_fit, min_fit, std_fit = lb.select('mean', 'max', 'min', 'std')
     plot.figure(0)
     plot.plot(mean_fit, color='blue')
-    plot.xlabel("Generations")
-    plot.ylabel("Fitness Values")
-    plot.savefig('Nets/SimpleNet/plots/plot-' + datetime.now().strftime('%m_%d_%Y-%H:%M:%S') + '.png')
+    plot.xlabel("Generations", fontsize=12)
+    plot.ylabel("Fitness Values", fontsize=12)
+    plot.savefig('Nets/SimpleNet/plots/plot-' + datetime.now().strftime('%m_%d_%Y-%H:%M:%S') + '.png',
+                 bbox_inches='tight')
     plot.figure(1)
-    plot.xlabel("Individuals tested")
-    plot.ylabel("MA50 of jam length values")
+    plot.xlabel("Individuals tested", fontsize=12)
+    plot.ylabel("MA50 of jam length values", fontsize=12)
 
-    font_p = FontProperties()
-    font_p.set_size('xx-small')
+    font_p = FontProperties(size=12)
+    font_p.set_size(size=12)
     plt = []
     legends = []
     for lane in range(0, len(det_ids_list)):
@@ -149,9 +150,10 @@ def main():
         jam_ma = gatraffictoolbox.ma(list(zip(*fit_list))[lane], 50)
         plt += plot.plot(np.arange(0, len(jam_ma), 1), jam_ma, color="C{}".format(lane), label='Lane {}'.format(lane))
         legends.append('Lane {}'.format(lane+1))
-    plot.legend(plt[:len(plt)], legends, bbox_to_anchor=(1.12, 1), loc='upper right',
+    plot.legend(plt[:len(plt)], legends, bbox_to_anchor=(1.25, 1), loc='upper right',
                 frameon=False, title='Lanes', prop=font_p)
-    plot.savefig('Nets/SimpleNet/plots/jam-' + datetime.now().strftime('%m_%d_%Y-%H:%M:%S') + '.png')
+    plot.savefig('Nets/SimpleNet/plots/jam-' + datetime.now().strftime('%m_%d_%Y-%H:%M:%S') + '.png',
+                 bbox_inches='tight')
 
     # Store best solution for the traffic intensity
     try:
