@@ -1,6 +1,6 @@
 # GATRAFFIC
 
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/suarna/gatraffic.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/suarna/gatraffic/alerts/)
+[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/suarna/gatraffic.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/suarna/gatraffic/context:python)
 
 **gatraffic** Is a Genetic Algorithm Traffic Agent for decentralized traffic management, the current implementation is used for testing purposes
 
