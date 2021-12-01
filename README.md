@@ -1,5 +1,7 @@
 # GATRAFFIC
 
+(https://lgtm.com/projects/g/suarna/gatraffic/alerts/)
+
 **gatraffic** Is a Genetic Algorithm Traffic Agent for decentralized traffic management, the current implementation is used for testing purposes
 
 ## Using the program:
