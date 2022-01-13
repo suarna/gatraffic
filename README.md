@@ -68,7 +68,7 @@ https://hub.docker.com/search?q=&type=edition&offering=community
 
 -Run the image with the following command:
 
-`sudo docker run -it --name gataffic suarna/gatraffic:latest bash`
+`sudo docker run -it --name gatraffic suarna/gatraffic:latest bash`
 
 -If everything works fine, a prompt, something similar to this, should appear:
 
