@@ -1,8 +1,9 @@
 sumolib==1.8.0
-numpy==1.19.5
+numpy==1.22.2
 tensorflow==2.5.0
 traci==1.8.0
 deap==1.3.1
 matplotlib==3.3.4
 tf_agents==0.7.1
 
+pillow>=10.2.0 # not directly required, pinned by Snyk to avoid a vulnerability
