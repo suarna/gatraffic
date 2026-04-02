@@ -1,5 +1,5 @@
 sumolib==1.8.0
-numpy==1.19.5
+numpy==1.22.2
 tensorflow==2.5.0
 traci==1.8.0
 deap==1.3.1
